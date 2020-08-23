@@ -17,6 +17,8 @@ from text_renderer.utils.bbox import BBox
 from text_renderer.utils.font_text import FontText
 from text_renderer.utils.types import FontColor, is_list
 
+from PIL import Image, ImageFont, ImageDraw
+BBOX_OFFSET_FROM_CHAR = 3
 
 class Render:
     def __init__(self, cfg: RenderCfg):
@@ -65,6 +67,50 @@ class Render:
             logger.exception(e)
             raise e
 
+    def lay_bbox_over_image(self, image, font_text, text_color):
+        '''
+        image:
+        text : font_text
+        '''
+  
+        font = font_text.font
+        text = font_text.text
+        xref, yref = font_text.xy
+        
+        draw = ImageDraw.Draw(image)
+        draw.text((abs(xref), abs(yref)), text, fill= text_color, font = font)
+        
+        for i, c in enumerate(text):
+            wd0, ht0 = font.getsize(text[:i+1])
+            #Assumes that there is character spacing between each character (depends on font size and font name)
+            char_wd, char_ht = font.getsize(c)
+        
+            x2, y2 = wd0, char_ht
+            x1, y1 = x2 - char_wd, y2 - char_ht
+
+            if i == 0:
+                x1 = x1 - BBOX_OFFSET_FROM_CHAR 
+            y1 = y1 - BBOX_OFFSET_FROM_CHAR 
+        
+            if i == (len(text)-1):
+                x2 = x2 + BBOX_OFFSET_FROM_CHAR
+            y2 = y2 + BBOX_OFFSET_FROM_CHAR
+
+            #check if bbox extends down or up for characters like y, p, j etc
+            if i==0:
+                (x1_init, y1_init, x2_init, y2_init) = x1,y1,x2,y2
+            
+            if (y1 < y1_init):
+                y1 = y1_init
+        
+            if (y2 > y2_init):
+                y2 = y2_init
+
+            draw.rectangle((x1 + xref, y1 + yref, x2 + xref, y2 + yref), fill=None, outline='black', width=1)
+
+        return image
+
+
     def gen_single_corpus(self) -> Tuple[PILImage, str]:
         font_text = self.corpus.sample()
 
@@ -98,6 +144,9 @@ class Render:
 
         img = self.paste_text_mask_on_bg(bg, transformed_text_mask)
 
+
+        img = self.lay_bbox_over_image(image= img, font_text= font_text, text_color= text_color)
+        
         return img, font_text.text
 
     def gen_multi_corpus(self) -> Tuple[PILImage, str]:
@@ -162,7 +211,7 @@ class Render:
             )
 
         img = self.paste_text_mask_on_bg(bg, transformed_text_mask)
-
+        
         return img, merged_text
 
     def paste_text_mask_on_bg(
