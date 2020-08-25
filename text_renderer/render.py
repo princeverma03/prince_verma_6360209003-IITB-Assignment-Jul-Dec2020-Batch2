@@ -69,8 +69,15 @@ class Render:
 
     def lay_bbox_over_image(self, image, font_text, text_color):
         '''
-        image:
-        text : font_text
+        lay_bbox_over_image method lay's boxed version on a text image, characterwise.
+
+        Arguments:
+        image - PIL image.
+        font_text - font_text datastructure that contains text, font etc.
+        text_color - color of the text (Data augmentation)
+        
+        Returns:
+        image - Updated image with each character having a uniform bbox
         '''
   
         font = font_text.font
@@ -165,7 +172,7 @@ class Render:
         
         img = self.paste_text_mask_on_bg(bg, transformed_text_mask)
 
-
+        # After pasting the text mask on the background we draw bbox for each character on the transformed image. 
         img = self.lay_bbox_over_image(image= img, font_text= font_text, text_color= text_color)
         
         return img, font_text.text
