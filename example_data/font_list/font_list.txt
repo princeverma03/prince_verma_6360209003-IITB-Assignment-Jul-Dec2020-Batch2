@@ -6,7 +6,5 @@ ariblk.ttf
 calibri.ttf
 calibrib.ttf
 calibril.ttf
-calibrili.ttf
 times.ttf
 timesbd.ttf
-timesi.ttf
