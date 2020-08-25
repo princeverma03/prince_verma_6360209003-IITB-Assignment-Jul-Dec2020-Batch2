@@ -81,7 +81,8 @@ class Render:
         overlap_flag = True
         for i, c in enumerate(text):
             wd0, ht0 = font.getsize(text[:i+1])
-#Assumes that there is character spacing between each character (depends on font size and font name)
+
+            #Assumes that there is character spacing between each character (depends on font size and font name)
             char_wd, char_ht = font.getsize(c)
         
             x2, y2 = wd0, char_ht
@@ -95,12 +96,12 @@ class Render:
                 x2 = x2 + BBOX_OFFSET_FROM_CHAR
             y2 = y2 + BBOX_OFFSET_FROM_CHAR
 
-#check if bbox extends down or up for characters like y, p, j etc
+            #check if bbox extends down or up for characters like y, p, j etc
             if i==0:
                 (x1_init, y1_init, x2_init, y2_init) = x1, y1, x2, y2
                 x1_prev, y1_prev, x2_prev, y2_prev = x1, y1, x2, y2
 
-#Maintaining same height of the box for all characters through out the text.
+            #Maintaining same height of the box for all characters through out the text.
             if (y1 != y1_init):
                 y1 = y1_init
         
@@ -122,15 +123,11 @@ class Render:
                 x1_prev, y1_prev, x2_prev, y2_prev = x1, y1, x2, y2
 
             #check if two ajacent boxes have considerable width.(5pixels)
-            #print('current width of {}:'.format(c), x2 -x1)
             if (x2 - x1 < 5):
                 x2, y2 = x2_prev, y2_prev
    
             draw.rectangle((x1 + xref, y1 + yref, x2 + xref, y2 + yref), fill=None, outline='black', width=1)
 
-#draw rectangle across entire image
-#        image_width, image_height = image.size
-#        draw.rectangle((0, 0, image_width -1 ,image_height -1), fill=None, outline='black', width=1)
         return image
 
 
@@ -165,12 +162,11 @@ class Render:
         else:
             transformed_text_mask = text_mask
 
-        img = self.lay_bbox_over_image(image= transformed_text_mask, font_text= font_text, text_color= text_color)
         
         img = self.paste_text_mask_on_bg(bg, transformed_text_mask)
 
 
-        #img = self.lay_bbox_over_image(image= img, font_text= font_text, text_color= text_color)
+        img = self.lay_bbox_over_image(image= img, font_text= font_text, text_color= text_color)
         
         return img, font_text.text
 
