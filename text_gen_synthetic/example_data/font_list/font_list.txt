@@ -1,10 +1,4 @@
-simsun.ttf
 arial.ttf
-ARIALN.TTF
-ARIALNI.TTF
-ariblk.ttf
 calibri.ttf
-calibrib.ttf
 calibril.ttf
-times.ttf
-timesbd.ttf
+segoesc.ttf
