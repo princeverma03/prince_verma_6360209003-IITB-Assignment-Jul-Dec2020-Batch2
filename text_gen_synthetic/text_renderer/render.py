@@ -18,7 +18,8 @@ from text_renderer.utils.font_text import FontText
 from text_renderer.utils.types import FontColor, is_list
 
 from PIL import Image, ImageFont, ImageDraw
-BBOX_OFFSET_FROM_CHAR = 3
+from matplotlib import pyplot as plt
+BBOX_OFFSET_FROM_CHAR = 0
 
 class Render:
     def __init__(self, cfg: RenderCfg):
@@ -86,6 +87,10 @@ class Render:
         
         draw = ImageDraw.Draw(image)
         overlap_flag = True
+
+        random_num_spaces = np.random.randint(11) #assuming max 11 spaces added after the text
+        text = text.ljust((len(text)+ random_num_spaces),' ')
+        
         for i, c in enumerate(text):
             wd0, ht0 = font.getsize(text[:i+1])
 
@@ -134,7 +139,7 @@ class Render:
                 x2, y2 = x2_prev, y2_prev
    
             draw.rectangle((x1 + xref, y1 + yref, x2 + xref, y2 + yref), fill=None, outline='black', width=1)
-
+            
         return image
 
 
